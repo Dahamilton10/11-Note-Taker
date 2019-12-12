@@ -9,15 +9,16 @@ const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// got this from https://expressjs.com/en/starter/static-files.html
+//Dunno what it really does. I understand that this serves files from the public folder and its sub folders. I just don't understand why this code doesn't work without it.
+app.use(express.static('public'))
 
 app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname,"public", "index.html"));
-    res.sendFile(path.join(__dirname,"public", "assets", "js", "index.js"));
 });
 
 app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname,"public", "notes.html"));
-    res.sendFile(path.join(__dirname,"public", "assets", "css", "styles.css"));
 });
 
 app.listen(PORT, function () {

@@ -33,6 +33,21 @@ app.post("/api/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "public", "notes.html"));
 });
 
+app.delete("/api/notes/:id", function (req, res) {
+    let id = req.params.id;
+    fs.readFile(`${path.join(__dirname, "db", "db.json")}`, (err, data) => {
+        if (err) throw err;
+        allNotes = JSON.parse(data);
+        console.log(id);
+        popNote(allNotes);
+        fs.writeFile(`${path.join(__dirname, "db", "db.json")}`, JSON.stringify(allNotes), (err) => {
+            if (err) throw err;
+            console.log('The "data to append" was appended to file!');
+            res.sendFile(path.join(__dirname, "public", "notes.html"));
+        });
+    })
+});
+
 app.listen(PORT, function () {
     console.log("App listening on PORT " + PORT);
 });
@@ -42,9 +57,33 @@ compileNote = (note) => {
         if (err) throw err;
         allNotes = JSON.parse(data);
         allNotes.push(note);
+        giveID(allNotes);
         fs.writeFile(`${path.join(__dirname, "db", "db.json")}`, JSON.stringify(allNotes), (err) => {
             if (err) throw err;
             console.log('The "data to append" was appended to file!');
         });
     })
 };
+
+giveID = (list) => {
+    for (i = 0; i < list.length; i++) {
+        list[i].id = uniqueID();
+    }
+}
+
+
+// found this at https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+function uniqueID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+popNote = (list) => {
+    for (i = 0; i < list.length; i++) {
+        if (id == list[i].id) {
+            list.pop(note);
+        }
+    }
+}

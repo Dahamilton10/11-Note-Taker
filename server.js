@@ -5,6 +5,8 @@ const axios = require("axios");
 
 let app = express();
 
+let id = "";
+
 const PORT = process.env.PORT || 3000;
 
 app.use(express.urlencoded({ extended: true }));
@@ -39,13 +41,20 @@ app.delete("/api/notes/:id", function (req, res) {
         if (err) throw err;
         allNotes = JSON.parse(data);
         console.log(id);
+        popNote = (list) => {
+            for (i = 0; i < list.length; i++) {
+                if (id == list[i].id) {
+                    list.pop(list[i]);
+                }
+            }
+        }
         popNote(allNotes);
         fs.writeFile(`${path.join(__dirname, "db", "db.json")}`, JSON.stringify(allNotes), (err) => {
             if (err) throw err;
             console.log('The "data to append" was appended to file!');
             res.sendFile(path.join(__dirname, "public", "notes.html"));
         });
-    })
+    });
 });
 
 app.listen(PORT, function () {
@@ -82,8 +91,9 @@ function uniqueID() {
 
 popNote = (list) => {
     for (i = 0; i < list.length; i++) {
+        console.log(id);
         if (id == list[i].id) {
-            list.pop(note);
+            list.pop(list[i]);
         }
     }
 }

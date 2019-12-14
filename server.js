@@ -37,14 +37,18 @@ app.post("/api/notes", function (req, res) {
 
 app.delete("/api/notes/:id", function (req, res) {
     let id = req.params.id;
+    console.log("before loop " + req.params.id)
     fs.readFile(`${path.join(__dirname, "db", "db.json")}`, (err, data) => {
         if (err) throw err;
         allNotes = JSON.parse(data);
-        console.log(id);
+        console.log("List " + JSON.stringify(allNotes));
+        console.log("id " + id);
         popNote = (list) => {
-            for (i = 0; i < list.length; i++) {
-                if (id == list[i].id) {
-                    list.pop(list[i]);
+            for (i = 0; i < allNotes.length; i++) {
+                if (id === allNotes[i].id) {
+                    console.log("List item " + JSON.stringify(allNotes[i]));
+                    console.log("inside loop " + list[i].id);
+                    list.splice(i, 1);
                 }
             }
         }
